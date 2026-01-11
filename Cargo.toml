@@ -1,0 +1,29 @@
+[package]
+name = "archynotch"
+version = "0.1.0"
+edition = "2021"
+authors = ["Livey <your@email.com>"]
+license = "GPL-3.0"
+description = "Interactive cyberpunk music overlay for Linux"
+
+[dependencies]
+iced = { version = "0.13", features = ["tokio", "image", "advanced", "canvas"] }
+mpris = "2.0"
+zbus = "4.0"
+cpal = "0.15"
+rustfft = "6.2"
+spectrum-analyzer = "1.5"
+tokio = { version = "1", features = ["full"] }
+image = "0.25"
+reqwest = { version = "0.12", features = ["blocking"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+dirs = "5.0"
+anyhow = "1.0"
+log = "0.4"
+env_logger = "0.11"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

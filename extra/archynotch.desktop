@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Archy Notch
+Comment=Cyberpunk Music Overlay
+Exec=archynotch
+Icon=archynotch
+Terminal=false
+Categories=Utility;AudioVideo;
+Keywords=music;overlay;rust;
+StartupNotify=false
