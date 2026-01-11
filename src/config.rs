@@ -10,6 +10,8 @@ pub struct Config {
 pub struct WindowConfig {
     pub width: u32,
     pub height: u32,
+    pub x: i32,
+    pub y: i32,
 }
 
 impl Config {
@@ -18,6 +20,8 @@ impl Config {
             window: WindowConfig {
                 width: 320,
                 height: 90,
+                x: 800,
+                y: 0,
             },
         })
     }

@@ -176,7 +176,10 @@ impl ArchyNotch {
             })
             .window(window::Settings {
                 size: (width, height).into(),
-                position: window::Position::Centered,
+                position: window::Position::Specific(iced::Point::new(
+                    config.window.x as f32,
+                    config.window.y as f32,
+                )),
                 resizable: false,
                 decorations: false,
                 transparent: true,
