@@ -184,6 +184,10 @@ impl ArchyNotch {
                 decorations: false,
                 transparent: true,
                 level: window::Level::AlwaysOnTop,
+                platform_specific: window::settings::PlatformSpecific {
+                    application_id: "ArchyNotch".to_string(),
+                    ..Default::default()
+                },
                 ..Default::default()
             })
             .run_with(move || ArchyNotch::new(config))
