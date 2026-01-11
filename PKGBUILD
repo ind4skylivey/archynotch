@@ -16,7 +16,7 @@ build() {
     # Enter the directory downloaded by git
     cd "$pkgname"
     export RUSTUP_TOOLCHAIN=stable
-    cargo build --release --locked
+    cargo build --release
 }
 
 package() {
