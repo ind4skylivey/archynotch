@@ -1,6 +1,6 @@
 # 🎸 ArchyNotch
 
-![License](https://img.shields.io/github/license/ind4skylivey/archynotch?style=for-the-badge&color=ff0050)
+![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=for-the-badge)
 ![Rust](https://img.shields.io/badge/Rust-1.75+-000000?style=for-the-badge&logo=rust&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Linux-blue?style=for-the-badge&logo=linux&logoColor=white)
 
