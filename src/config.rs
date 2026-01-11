@@ -16,8 +16,8 @@ impl Config {
     pub fn load_or_default() -> Result<Self> {
         Ok(Self {
             window: WindowConfig {
-                width: 800,
-                height: 600,
+                width: 320,
+                height: 90,
             },
         })
     }

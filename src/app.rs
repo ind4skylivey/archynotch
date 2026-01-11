@@ -86,6 +86,18 @@ impl ArchyNotch {
             }
             Message::ExpandToggle => {
                 self.is_expanded = !self.is_expanded;
+                let (w, h) = if self.is_expanded {
+                    (500.0, 120.0)
+                } else {
+                    (320.0, 90.0)
+                };
+                return window::get_latest().then(move |id| {
+                    if let Some(id) = id {
+                        window::resize(id, iced::Size::new(w, h))
+                    } else {
+                        Task::none()
+                    }
+                });
             }
             Message::MetadataChanged(metadata) => {
                 let url_changed = match (&self.current_track, &metadata.cover_url) {
