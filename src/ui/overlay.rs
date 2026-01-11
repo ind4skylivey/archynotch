@@ -80,11 +80,16 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
                 .padding(0)
                 .style(button::text);
 
-            let info = column![
+            let info_text = column![
                 text(&track.title).size(13).color(NEON_CYAN),
                 text(track.artist.to_uppercase()).size(10).color(DIM_TEXT)
             ]
             .width(Length::Shrink);
+
+            // Wrap info in a button for dragging
+            let info = button(info_text)
+                .on_press(Message::WindowDragged)
+                .style(button::text);
 
             if self.is_expanded {
                 let play_pause_icon = match self.playback_status {
@@ -114,8 +119,12 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
                 ]
                 .align_y(Alignment::Center)
             } else {
+                let handle = button(text("::").color(NEON_PINK))
+                    .on_press(Message::WindowDragged)
+                    .style(button::text);
+
                 row![
-                    text("::").color(NEON_PINK),
+                    handle,
                     horizontal_space().width(8),
                     cover,
                     horizontal_space().width(12),
@@ -124,44 +133,34 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
                 .align_y(Alignment::Center)
             }
         } else {
-            row![text("[ SYSTEM READY ]").size(12).color(DIM_TEXT)].into()
+            let ready_text = text("[ SYSTEM READY ]").size(12).color(DIM_TEXT);
+            row![button(ready_text)
+                .on_press(Message::WindowDragged)
+                .style(button::text)]
+            .into()
         };
 
-        container(
-            button(container(content).padding([8, 20]).center_y(Length::Shrink))
-                .on_press(Message::WindowDragged)
-                .style(|_, status| {
-                    let border_color = if status == button::Status::Hovered {
-                        NEON_PINK
-                    } else {
-                        NEON_CYAN
-                    };
-                    button::Style {
-                        background: Some(Background::Color(CYBER_BG)),
-                        text_color: NEON_CYAN,
-                        border: Border {
-                            radius: 4.0.into(),
-                            width: 2.0,
-                            color: border_color,
-                        },
-                        shadow: Shadow {
-                            color: if status == button::Status::Hovered {
-                                Color::from_rgba(1.0, 0.0, 0.5, 0.4)
-                            } else {
-                                Color::from_rgba(0.0, 0.95, 1.0, 0.25)
-                            },
-                            blur_radius: 15.0,
-                            ..Default::default()
-                        },
-                        ..Default::default()
-                    }
-                })
-                .width(Length::Shrink),
-        )
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .align_x(Alignment::Center)
-        .align_y(Alignment::Center)
-        .into()
+        // Apply the notch styling to the container itself, not a button
+        container(container(content).padding([8, 20]).center_y(Length::Shrink))
+            .style(|_| container::Style {
+                background: Some(Background::Color(CYBER_BG)),
+                text_color: Some(NEON_CYAN),
+                border: Border {
+                    radius: 4.0.into(),
+                    width: 2.0,
+                    color: NEON_CYAN,
+                },
+                shadow: Shadow {
+                    color: Color::from_rgba(0.0, 0.95, 1.0, 0.25),
+                    blur_radius: 15.0,
+                    ..Default::default()
+                },
+                ..Default::default()
+            })
+            .width(Length::Shrink)
+            .height(Length::Shrink)
+            .align_x(Alignment::Center)
+            .align_y(Alignment::Center)
+            .into()
     }
 }
