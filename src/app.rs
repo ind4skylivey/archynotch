@@ -157,6 +157,10 @@ impl ArchyNotch {
         application("archynotch", ArchyNotch::update, ArchyNotch::view)
             .subscription(ArchyNotch::subscription)
             .theme(|_| Theme::Dark)
+            .style(|_theme| application::Appearance {
+                background_color: iced::Color::TRANSPARENT,
+                text_color: iced::Color::WHITE,
+            })
             .window(window::Settings {
                 size: (width, height).into(),
                 position: window::Position::Centered,
