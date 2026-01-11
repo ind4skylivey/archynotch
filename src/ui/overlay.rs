@@ -44,7 +44,7 @@ impl<'a> OverlayView<'a> {
 impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
     fn into(self) -> Element<'a, Message> {
         let content = if let Some(track) = self.track {
-            let cover: Element<Message> = if let Some(handle) = self.cover_image {
+            let cover_content = if let Some(handle) = self.cover_image {
                 container(
                     image(handle.clone())
                         .width(40)
@@ -59,7 +59,6 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
                     },
                     ..Default::default()
                 })
-                .into()
             } else {
                 container(text("DISK").size(10).color(NEON_CYAN))
                     .width(40)
@@ -75,8 +74,11 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
                         },
                         ..Default::default()
                     })
-                    .into()
             };
+            let cover = button(cover_content)
+                .on_press(Message::ExpandToggle)
+                .padding(0)
+                .style(button::text);
 
             let info = column![
                 text(&track.title).size(13).color(NEON_CYAN),
@@ -127,7 +129,7 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
 
         container(
             button(container(content).padding([8, 20]).center_y(Length::Shrink))
-                .on_press(Message::ExpandToggle)
+                .on_press(Message::WindowDragged)
                 .style(|_, status| {
                     let border_color = if status == button::Status::Hovered {
                         NEON_PINK
