@@ -32,6 +32,7 @@ pub enum Message {
     NextTrack,
     PreviousTrack,
     ExpandToggle,
+    WindowDragged,
     Tick,
 }
 
