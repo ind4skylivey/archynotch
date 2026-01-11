@@ -1,28 +1,42 @@
 # 🎸 ArchyNotch
 
-**ArchyNotch** is a cyberpunk-inspired, interactive music overlay for Linux. It integrates seamlessly with your desktop, providing a sleek, "always-on-top" notch that displays your current playing track, album art, and playback controls.
+> **The Ultimate Cyberpunk Music Overlay for Linux**
 
 ![ArchyNotch Banner](assets/banner.png)
 
-## Preview (Wayland / KDE Plasma)
+**ArchyNotch** isn't just a music player—it's a statement. Inspired by the neon-soaked aesthetics of cyberpunk culture, this interactive "notch" sits elegantly on your desktop, providing seamless control over your media without breaking your flow.
+
+Built with **Rust** 🦀 and **Iced** 🧊, it's blazing fast, lightweight, and looks absolutely stunning.
+
+---
+
+## 📸 Preview
+
+### Wayland / KDE Plasma
 
 ![ArchyNotch Preview](assets/preview_wayland.png)
 
+---
+
 ## ✨ Features
 
-- **Cyberpunk Aesthetics**: Neon colors, glassmorphism, and smooth animations.
-- **MPRIS Integration**: Works with Spotify, VLC, Firefox, and any MPRIS-compatible player.
-- **Interactive Notch**:
-  - **Collapsed Mode**: Minimalist "notch" showing album art and basic info.
-  - **Expanded Mode**: Full playback controls (Play/Pause, Next, Prev) and detailed track info.
-- **Visualizers**: (Coming Soon) Real-time audio visualization (Spectrum, Waveform).
-- **Lightweight**: Built with Rust and Iced for high performance and low resource usage.
+- **🔮 Cyberpunk Aesthetics**: Glassmorphism, neon glows, and smooth animations that breathe life into your desktop.
+- **🎵 Universal Control**: Seamlessly integrates with **Spotify**, **VLC**, **Firefox**, and any other MPRIS-compatible player.
+- **🖱️ Interactive Notch**:
+  - **Collapsed**: A sleek, unobtrusive pill showing album art.
+  - **Expanded**: Full playback controls and track details at your fingertips.
+- **🖐️ Drag & Drop**: Place it anywhere! Click and drag the body to position it perfectly on your screen.
+- **🚀 High Performance**: Native code, minimal resource usage.
 
-## 📦 Installation
+---
 
-### Arch Linux (AUR)
+## 🚀 Getting Started
 
-You can install `archynotch` directly using the provided `PKGBUILD`:
+### 📦 Installation
+
+#### Option 1: Arch Linux (Recommended)
+
+Use the provided `PKGBUILD` for a clean system install:
 
 ```bash
 git clone https://github.com/ind4skylivey/archynotch.git
@@ -30,42 +44,75 @@ cd archynotch
 makepkg -si
 ```
 
-### From Source (Cargo)
+#### Option 2: Manual Install (Universal)
 
-If you have Rust installed:
-
-```bash
-cargo install --path .
-```
-
-## 🚀 Usage
-
-Simply run the application from your terminal or application launcher:
+If you have Rust installed, you can build and install manually:
 
 ```bash
-archynotch
+git clone https://github.com/ind4skylivey/archynotch.git
+cd archynotch
+cargo build --release
+sudo make install
 ```
 
-The notch will appear at the top of your screen.
+---
 
-- **Click** the notch to expand/collapse it.
-- **Hover** to see glow effects.
-- **Controls** appear when expanded.
+## 🎮 Controls
+
+| Action                | Interaction                                   |
+| :-------------------- | :-------------------------------------------- |
+| **Expand / Collapse** | Click the **Album Art / Icon**                |
+| **Move Window**       | Click and drag the **Main Body**              |
+| **Play / Pause**      | Click the **Play** button (Expanded)          |
+| **Next / Prev**       | Click the **<<** or **>>** buttons (Expanded) |
+
+---
 
 ## ⚙️ Configuration
 
-Configuration is loaded from `~/.config/archynotch/config.toml` (created on first run).
+On first run, a configuration file is created at `~/.config/archynotch/config.toml`. You can tweak the starting position and size:
 
 ```toml
 [window]
-width = 800
-height = 600
+width = 320   # Default collapsed width
+height = 90   # Default collapsed height
+x = 800       # Horizontal position (adjust for your monitor)
+y = 0         # Vertical position (0 = top of screen)
 ```
+
+---
+
+## 🔧 Troubleshooting
+
+### "I see a black box around the notch!" (DWM / X11 Users)
+
+If you are using a window manager like **DWM**, **i3**, or **bspwm** that doesn't support transparency by default, you might see a black background.
+
+**Solution:** Install and run a compositor like `picom`.
+
+```bash
+sudo pacman -S picom
+picom -b
+```
+
+ArchyNotch relies on a compositor for its transparency and glow effects.
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] **Real-time Audio Visualizers** (Spectrum, Waveform)
+- [ ] **Theming Support** (Customize colors via config)
+- [ ] **Vertical Mode** (For side-bars)
+
+---
 
 ## 📜 License
 
-This project is licensed under the **GPL-3.0** License.
+This project is proudly open-source under the **GPL-3.0** License.
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/ind4skylivey">ind4skylivey</a></sub>
+</div>
