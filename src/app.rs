@@ -157,7 +157,7 @@ impl ArchyNotch {
         application("archynotch", ArchyNotch::update, ArchyNotch::view)
             .subscription(ArchyNotch::subscription)
             .theme(|_| Theme::Dark)
-            .style(|_theme| application::Appearance {
+            .style(|_theme, _status| application::Appearance {
                 background_color: iced::Color::TRANSPARENT,
                 text_color: iced::Color::WHITE,
             })
