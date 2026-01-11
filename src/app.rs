@@ -185,7 +185,7 @@ impl ArchyNotch {
                 transparent: true,
                 level: window::Level::AlwaysOnTop,
                 platform_specific: window::settings::PlatformSpecific {
-                    application_id: "ArchyNotch".to_string(),
+                    application_id: "archynotch".to_string(),
                     ..Default::default()
                 },
                 ..Default::default()
