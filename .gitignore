@@ -33,4 +33,6 @@ src/pkg/
 *.pkg.tar.zst
 *.src.tar.gz
 
-
+# Nested copies/mistakes
+src/archynotch/
+archynotch/

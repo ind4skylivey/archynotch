@@ -1,16 +1,9 @@
-use iced::{
-    application, time, window, Element,
-    Subscription, Theme, Task,
-    widget::image,
-};
+use iced::{application, time, widget::image, window, Element, Subscription, Task, Theme};
 use std::time::Duration;
 
 use crate::{
-    audio::AudioCapture,
-    config::Config,
-    ui::overlay::OverlayView,
+    audio::AudioCapture, config::Config, mpris::MprisClient, ui::overlay::OverlayView,
     visualizers::VisualizerType,
-    mpris::MprisClient,
 };
 
 pub struct ArchyNotch {
@@ -19,7 +12,7 @@ pub struct ArchyNotch {
     mpris_client: MprisClient,
     #[allow(dead_code)]
     audio_capture: Option<AudioCapture>,
-    
+
     // State
     is_expanded: bool,
     current_track: Option<TrackMetadata>,
@@ -62,7 +55,7 @@ impl ArchyNotch {
     pub fn new(config: Config) -> (Self, Task<Message>) {
         let mpris_client = MprisClient::new().expect("Failed to create MPRIS client");
         let audio_capture = AudioCapture::new().ok();
-        
+
         let app = Self {
             config,
             mpris_client,
@@ -74,7 +67,7 @@ impl ArchyNotch {
             audio_samples: Vec::new(),
             visualizer: VisualizerType::Spectrum,
         };
-        
+
         (app, Task::none())
     }
 
@@ -87,7 +80,9 @@ impl ArchyNotch {
                 return Task::perform(perform_mpris_action(MprisAction::Next), |_| Message::Tick);
             }
             Message::PreviousTrack => {
-                return Task::perform(perform_mpris_action(MprisAction::Previous), |_| Message::Tick);
+                return Task::perform(perform_mpris_action(MprisAction::Previous), |_| {
+                    Message::Tick
+                });
             }
             Message::ExpandToggle => {
                 self.is_expanded = !self.is_expanded;
@@ -105,17 +100,35 @@ impl ArchyNotch {
                     }
                 }
             }
-            Message::CoverLoaded(handle) => { self.current_cover = handle; }
-            Message::PlaybackStatusChanged(status) => { self.playback_status = status; }
-            Message::Tick => { return Task::perform(poll_media_state(), Message::UpdatePoll); }
+            Message::CoverLoaded(handle) => {
+                self.current_cover = handle;
+            }
+            Message::PlaybackStatusChanged(status) => {
+                self.playback_status = status;
+            }
+            Message::Tick => {
+                return Task::perform(poll_media_state(), Message::UpdatePoll);
+            }
             Message::UpdatePoll(Some((metadata, status))) => {
                 let mut commands = Vec::new();
                 let track_changed = match &self.current_track {
-                    Some(current) => current.title != metadata.title || current.artist != metadata.artist,
+                    Some(current) => {
+                        current.title != metadata.title || current.artist != metadata.artist
+                    }
                     None => true,
                 };
-                if track_changed { commands.push(Task::perform(async move { metadata }, Message::MetadataChanged)); }
-                if status != self.playback_status { commands.push(Task::perform(async move { status }, Message::PlaybackStatusChanged)); }
+                if track_changed {
+                    commands.push(Task::perform(
+                        async move { metadata },
+                        Message::MetadataChanged,
+                    ));
+                }
+                if status != self.playback_status {
+                    commands.push(Task::perform(
+                        async move { status },
+                        Message::PlaybackStatusChanged,
+                    ));
+                }
                 return Task::batch(commands);
             }
             _ => {}
@@ -124,7 +137,15 @@ impl ArchyNotch {
     }
 
     pub fn view(&self) -> Element<'_, Message> {
-        OverlayView::new(&self.current_track, &self.current_cover, &self.audio_samples, self.visualizer, self.is_expanded, &self.playback_status).into()
+        OverlayView::new(
+            &self.current_track,
+            &self.current_cover,
+            &self.audio_samples,
+            self.visualizer,
+            self.is_expanded,
+            &self.playback_status,
+        )
+        .into()
     }
 
     pub fn subscription(&self) -> Subscription<Message> {
@@ -150,7 +171,11 @@ impl ArchyNotch {
 }
 
 #[derive(Debug, Clone, Copy)]
-enum MprisAction { Toggle, Next, Previous }
+enum MprisAction {
+    Toggle,
+    Next,
+    Previous,
+}
 
 async fn perform_mpris_action(action: MprisAction) {
     let _ = tokio::task::spawn_blocking(move || {
@@ -161,7 +186,8 @@ async fn perform_mpris_action(action: MprisAction) {
             MprisAction::Next => player.next().ok(),
             MprisAction::Previous => player.previous().ok(),
         }
-    }).await;
+    })
+    .await;
 }
 
 async fn poll_media_state() -> Option<(TrackMetadata, PlaybackStatus)> {
@@ -170,17 +196,28 @@ async fn poll_media_state() -> Option<(TrackMetadata, PlaybackStatus)> {
         let player = finder.find_active().ok()?;
         let m = player.get_metadata().ok()?;
         let s = match player.get_playback_status().ok()? {
-             mpris::PlaybackStatus::Playing => PlaybackStatus::Playing,
-             mpris::PlaybackStatus::Paused => PlaybackStatus::Paused,
-             _ => PlaybackStatus::Stopped,
+            mpris::PlaybackStatus::Playing => PlaybackStatus::Playing,
+            mpris::PlaybackStatus::Paused => PlaybackStatus::Paused,
+            _ => PlaybackStatus::Stopped,
         };
-        Some((TrackMetadata {
-            title: m.title().unwrap_or("Unknown").to_string(),
-            artist: m.artists().and_then(|a| a.first()).map(|s| s.to_string()).unwrap_or_else(|| "Unknown".to_string()),
-            album: m.album_name().unwrap_or("").to_string(),
-            cover_url: m.art_url().map(|u| u.to_string()),
-        }, s))
-    }).await.ok().flatten()
+        Some((
+            TrackMetadata {
+                title: m.title().unwrap_or("Unknown").to_string(),
+                artist: m
+                    .artists()
+                    .unwrap_or_default()
+                    .first()
+                    .map(|s| s.to_string())
+                    .unwrap_or_else(|| "Unknown".to_string()),
+                album: m.album_name().unwrap_or("").to_string(),
+                cover_url: m.art_url().map(|u| u.to_string()),
+            },
+            s,
+        ))
+    })
+    .await
+    .ok()
+    .flatten()
 }
 
 async fn load_cover(url: String) -> Option<image::Handle> {
@@ -189,5 +226,7 @@ async fn load_cover(url: String) -> Option<image::Handle> {
     } else if url.starts_with("http") {
         let bytes = reqwest::get(&url).await.ok()?.bytes().await.ok()?;
         Some(image::Handle::from_bytes(bytes))
-    } else { None }
+    } else {
+        None
+    }
 }
