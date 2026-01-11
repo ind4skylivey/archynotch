@@ -72,6 +72,25 @@ impl ArchyNotch {
         (app, Task::none())
     }
 
+    fn calculate_window_size(&self) -> (f32, f32) {
+        let (base_width, height) = if self.is_expanded {
+            (180.0, 120.0)
+        } else {
+            (130.0, 90.0)
+        };
+
+        let text_width = if let Some(track) = &self.current_track {
+            let title_w = track.title.chars().count() as f32 * 8.0;
+            let artist_w = track.artist.chars().count() as f32 * 6.0;
+            title_w.max(artist_w)
+        } else {
+            100.0
+        };
+
+        let width = (base_width + text_width).max(280.0).min(800.0);
+        (width, height)
+    }
+
     pub fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::TogglePlayPause => {
@@ -87,11 +106,7 @@ impl ArchyNotch {
             }
             Message::ExpandToggle => {
                 self.is_expanded = !self.is_expanded;
-                let (w, h) = if self.is_expanded {
-                    (350.0, 120.0)
-                } else {
-                    (320.0, 90.0)
-                };
+                let (w, h) = self.calculate_window_size();
                 return window::get_latest().then(move |id| {
                     if let Some(id) = id {
                         window::resize(id, iced::Size::new(w, h))
@@ -107,11 +122,24 @@ impl ArchyNotch {
                     _ => false,
                 };
                 self.current_track = Some(metadata.clone());
+
+                let (w, h) = self.calculate_window_size();
+                let resize_task = window::get_latest().then(move |id| {
+                    if let Some(id) = id {
+                        window::resize(id, iced::Size::new(w, h))
+                    } else {
+                        Task::none()
+                    }
+                });
+
+                let mut tasks = vec![resize_task];
+
                 if url_changed {
                     if let Some(url) = metadata.cover_url {
-                        return Task::perform(load_cover(url), Message::CoverLoaded);
+                        tasks.push(Task::perform(load_cover(url), Message::CoverLoaded));
                     }
                 }
+                return Task::batch(tasks);
             }
             Message::CoverLoaded(handle) => {
                 self.current_cover = handle;
