@@ -133,7 +133,7 @@ impl ArchyNotch {
 
     pub fn run(config: Config) -> iced::Result {
         let (width, height) = (config.window.width as f32, config.window.height as f32);
-        application("ArchyNotch", ArchyNotch::update, ArchyNotch::view)
+        application("archynotch", ArchyNotch::update, ArchyNotch::view)
             .subscription(ArchyNotch::subscription)
             .theme(|_| Theme::Dark)
             .window(window::Settings {

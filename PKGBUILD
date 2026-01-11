@@ -1,40 +1,35 @@
-# Maintainer: Livey <your@email.com>
+# Maintainer: ind4skylivey <https://github.com/ind4skylivey>
 pkgname=archynotch
 pkgver=0.1.0
 pkgrel=1
 pkgdesc="Interactive cyberpunk music overlay for Linux"
 arch=('x86_64')
-url="https://github.com/yourusername/archynotch"
+url="https://github.com/ind4skylivey/archynotch"
 license=('GPL3')
 depends=('gtk3' 'alsa-lib' 'openssl' 'dbus')
-makedepends=('cargo')
-source=("file://$(pwd)/") # Local source for now
+makedepends=('cargo' 'git')
+# Usamos el repositorio de GitHub como fuente
+source=("git+https://github.com/ind4skylivey/archynotch.git")
 sha256sums=('SKIP')
 
-prepare() {
-    cd "$srcdir"
-    export RUSTUP_TOOLCHAIN=stable
-    cargo fetch --locked --target "$CARCH-unknown-linux-gnu"
-}
-
 build() {
-    cd "$srcdir"
+    # Entramos en la carpeta descargada por git
+    cd "$pkgname"
     export RUSTUP_TOOLCHAIN=stable
-    export CARGO_TARGET_DIR=target
-    cargo build --frozen --release --all-features
+    cargo build --release --locked
 }
 
 package() {
-    cd "$srcdir"
+    cd "$pkgname"
     
-    # Install Binary
-    install -Dm755 target/release/archynotch "$pkgdir/usr/bin/archynotch"
+    # Instalar Binario
+    install -Dm755 "target/release/archynotch" "$pkgdir/usr/bin/archynotch"
     
-    # Install Desktop Entry
-    install -Dm644 extra/archynotch.desktop "$pkgdir/usr/share/applications/archynotch.desktop"
+    # Instalar Desktop Entry
+    install -Dm644 "extra/archynotch.desktop" "$pkgdir/usr/share/applications/archynotch.desktop"
     
-    # Install Icon (if exists)
-    if [ -f assets/icon.png ]; then
-        install -Dm644 assets/icon.png "$pkgdir/usr/share/icons/hicolor/512x512/apps/archynotch.png"
+    # Instalar Icono
+    if [ -f "assets/icon.png" ]; then
+        install -Dm644 "assets/icon.png" "$pkgdir/usr/share/icons/hicolor/512x512/apps/archynotch.png"
     fi
 }

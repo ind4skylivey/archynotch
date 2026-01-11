@@ -1,4 +1,37 @@
+# Rust
 /target
-/Cargo.lock
+/debug
+/release
 **/*.rs.bk
+Cargo.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.iml
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Secrets & Env
+.env
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+secrets.json
+config.json
+
+# Logs
+*.log
+
+# Build Artifacts
+pkg/
+src/pkg/
+*.pkg.tar.zst
+*.src.tar.gz
+
+# Nested copies/mistakes
+src/archynotch/
