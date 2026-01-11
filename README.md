@@ -16,6 +16,12 @@ Built with **Rust** 🦀 and **Iced** 🧊, it's blazing fast, lightweight, and 
 
 ![ArchyNotch Preview](assets/preview_wayland.png)
 
+### Tiling Window Managers (DWM, i3, Hyprland)
+
+![ArchyNotch DWM Preview](assets/dwm_preview.png)
+
+> **Note for Tiling WM Users:** The visual appearance (transparency, shadows, blur, and rounded corners) heavily depends on your compositor configuration (e.g., `picom.conf`). The screenshot above shows ArchyNotch running on **DWM** with a custom **picom** configuration. You may need to adjust your compositor rules to achieve a similar look (e.g., excluding ArchyNotch from tiling, enabling blur, etc.).
+
 ---
 
 ## ✨ Features
