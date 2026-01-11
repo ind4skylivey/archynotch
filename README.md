@@ -4,6 +4,10 @@
 
 ![ArchyNotch Banner](assets/banner.png)
 
+## Preview (Wayland / KDE Plasma)
+
+![ArchyNotch Preview](assets/preview_wayland.png)
+
 ## ✨ Features
 
 - **Cyberpunk Aesthetics**: Neon colors, glassmorphism, and smooth animations.
