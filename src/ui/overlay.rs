@@ -141,26 +141,32 @@ impl<'a> Into<Element<'a, Message>> for OverlayView<'a> {
         };
 
         // Apply the notch styling to the container itself, not a button
-        container(container(content).padding([8, 20]).center_y(Length::Shrink))
-            .style(|_| container::Style {
-                background: Some(Background::Color(CYBER_BG)),
-                text_color: Some(NEON_CYAN),
-                border: Border {
-                    radius: 4.0.into(),
-                    width: 2.0,
-                    color: NEON_CYAN,
-                },
-                shadow: Shadow {
-                    color: Color::from_rgba(0.0, 0.95, 1.0, 0.25),
-                    blur_radius: 15.0,
+        // Outer container is transparent and handles alignment
+        container(
+            // Inner container has the visual style (the "notch")
+            container(content)
+                .padding([8, 20])
+                .center_y(Length::Shrink)
+                .style(|_| container::Style {
+                    background: Some(Background::Color(CYBER_BG)),
+                    text_color: Some(NEON_CYAN),
+                    border: Border {
+                        radius: 4.0.into(),
+                        width: 2.0,
+                        color: NEON_CYAN,
+                    },
+                    shadow: Shadow {
+                        color: Color::from_rgba(0.0, 0.95, 1.0, 0.25),
+                        blur_radius: 15.0,
+                        ..Default::default()
+                    },
                     ..Default::default()
-                },
-                ..Default::default()
-            })
-            .width(Length::Shrink)
-            .height(Length::Shrink)
-            .align_x(Alignment::Center)
-            .align_y(Alignment::Center)
-            .into()
+                }),
+        )
+        .width(Length::Fill)
+        .height(Length::Fill)
+        .align_x(Alignment::Center)
+        .align_y(Alignment::Center)
+        .into()
     }
 }
