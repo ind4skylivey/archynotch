@@ -87,7 +87,7 @@ impl ArchyNotch {
             Message::ExpandToggle => {
                 self.is_expanded = !self.is_expanded;
                 let (w, h) = if self.is_expanded {
-                    (500.0, 120.0)
+                    (350.0, 120.0)
                 } else {
                     (320.0, 90.0)
                 };
